@@ -7,6 +7,6 @@
 ![GitHub](https://img.shields.io/github/license/meowcolm024/codewars)
 ![HKUST](https://img.shields.io/badge/From-HKUST-yellow)
 
-My solutions :)
+My solutions :D
 
 Finished `Katas` in the folder :D
