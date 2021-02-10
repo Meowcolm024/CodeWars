@@ -7,6 +7,8 @@
 ![GitHub](https://img.shields.io/github/license/meowcolm024/codewars)
 ![HKUST](https://img.shields.io/badge/From-HKUST-yellow)
 
-My solutions :D
+My solutions in *Haskell* :D
 
-Finished `Katas` in the folder :D
+Finished `Katas` in the folder :P
+
+[My Home Page](https://www.codewars.com/users/Meowcolm024) of CodeWars.
