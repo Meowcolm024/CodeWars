@@ -7,8 +7,8 @@
 ![GitHub](https://img.shields.io/github/license/meowcolm024/codewars)
 ![HKUST](https://img.shields.io/badge/From-HKUST-yellow)
 
-My solutions in *Haskell* :D
+My solutions in *Haskell* :D (Well, some may not in the repo orz)
 
-Finished `Katas` in the folder :P
+What in `Katas` folder is not finished QAQ
 
 [My Home Page](https://www.codewars.com/users/Meowcolm024) of CodeWars.
