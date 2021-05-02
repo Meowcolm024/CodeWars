@@ -14,24 +14,9 @@ data AST = Imm Int
          | Div AST AST
          deriving (Eq, Show)
 
-data Token = TChar Char
-           | TInt Int
-           | TStr String
-           deriving (Eq, Show)
-
 alpha, digit :: String
 alpha = ['a' .. 'z'] ++ ['A' .. 'Z']
 digit = ['0' .. '9']
-
-tokenize :: String -> [Token]
-tokenize [] = []
-tokenize xxs@(c : cs) | c `elem` "-+*/()[]" = TChar c : tokenize cs
-                      | not (null i)        = TInt (read i) : tokenize is
-                      | not (null s)        = TStr s : tokenize ss
-                      | otherwise           = tokenize cs
- where
-  (i, is) = span (`elem` digit) xxs
-  (s, ss) = span (`elem` alpha) xxs
 
 compile :: String -> [String]
 compile = pass3 . pass2 . pass1
@@ -103,7 +88,7 @@ toAST :: Lang -> [(Lang, AST)] -> AST
 toAST (LFun args expr) _     = toAST expr (extractArgs args)
 toAST lang             table = toAST' lang
  where
-  toAST' x@(Atom _  ) = replace x table
+  toAST' x@(Atom _  ) = fromJust (lookup x table)
   toAST' (  LNum i  ) = Imm i
   toAST' (  LAdd a b) = Add (toAST' a) (toAST' b)
   toAST' (  LSub a b) = Sub (toAST' a) (toAST' b)
@@ -113,9 +98,6 @@ toAST lang             table = toAST' lang
 
 extractArgs :: [Lang] -> [(Lang, AST)]
 extractArgs args = zip args (zipWith (\x _ -> Arg x) [0 ..] args)
-
-replace :: Lang -> [(Lang, AST)] -> AST
-replace x table = fromJust (lookup x table)
 
 -- pass2
 
@@ -145,7 +127,7 @@ assemble (Sub x y) = assemble x <> ["PU"] <> assemble y <> ["SW", "PO", "SU"]
 assemble (Mul x y) = assemble x <> ["PU"] <> assemble y <> ["SW", "PO", "MU"]
 assemble (Div x y) = assemble x <> ["PU"] <> assemble y <> ["SW", "PO", "DI"]
 
--- others
+-- testing function
 
 simulate :: [String] -> [Int] -> Int
 simulate asm argv = takeR0 $ foldl' step (0, 0, []) asm where
@@ -160,3 +142,6 @@ simulate asm argv = takeR0 $ foldl' step (0, 0, []) asm where
     "MU"             -> (r0 * r1, r1, stack)
     ~"DI"            -> (r0 `div` r1, r1, stack)
   takeR0 (r0, _, _) = r0
+
+main :: IO ()
+main = print $ simulate (compile "[a b] a*a + b*b") [3, 4]
