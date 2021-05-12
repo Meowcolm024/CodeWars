@@ -24,7 +24,6 @@ compile = pass3 . pass2 . pass1
 
 pass1 :: String -> AST
 pass1 x = case regularParse parseFunc x of
-  Right (LFun args expr) -> toAST expr (extractArgs args)
   Right expr             -> toAST expr []
   Left  err              -> error (show err)
 
@@ -77,10 +76,10 @@ betSpaces :: Parser a -> Parser a
 betSpaces = between spaces spaces
 
 digits :: Parser String
-digits = many1 (satisfy (`elem` digit))
+digits = many1 $ satisfy (`elem` digit)
 
 alphas :: Parser String
-alphas = many1 (satisfy (`elem` alpha))
+alphas = many1 $ satisfy (`elem` alpha)
 
 -- morph to AST
 
@@ -97,7 +96,7 @@ toAST lang             table = toAST' lang
   toAST' _            = undefined
 
 extractArgs :: [Lang] -> [(Lang, AST)]
-extractArgs args = zip args (zipWith (\x _ -> Arg x) [0 ..] args)
+extractArgs = zipWith (\x y -> (y, Arg x)) [0 ..]
 
 -- pass2
 
@@ -140,7 +139,8 @@ simulate asm argv = takeR0 $ foldl' step (0, 0, []) asm where
     "AD"             -> (r0 + r1, r1, stack)
     "SU"             -> (r0 - r1, r1, stack)
     "MU"             -> (r0 * r1, r1, stack)
-    ~"DI"            -> (r0 `div` r1, r1, stack)
+    "DI"             -> (r0 `div` r1, r1, stack)
+    _                -> error "Invalid instruction"
   takeR0 (r0, _, _) = r0
 
 main :: IO ()
